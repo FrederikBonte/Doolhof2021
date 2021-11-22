@@ -1,4 +1,4 @@
-# [[https://trello.com/b/kB4SdBQn/doolhof|Doolhof2021]]
+# [Doolhof2021](https://trello.com/b/kB4SdBQn/doolhof)
 
 Gezamenlijk project om een doolhof te kunnen genereren en tekenen.
 * Doolhof moet gegenereerd worden met Krustal Algoritme
