@@ -16,5 +16,16 @@ namespace DoolhofProject2021
         {
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Maze maze = new Maze(4, 3);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Maze maze = new Maze(40, 30);
+
+        }
     }
 }

@@ -8,19 +8,31 @@ namespace DoolhofProject2021
 {
     public class Room
     {
-        // There are four possible directions to move from Room to Room.
-        private const int NORTH = 0;
-        private const int EAST = 1;
-        private const int SOUTH = 2;
-        private const int WEST = 3;
-
         // Each room has four possible connections.
         private Room[] connections = new Room[4];
+
+        private readonly int x,y;
 
         // Can the maze be exited from this room?
         private bool exit;
         // Is there (currently) a treasure in this room?
         private bool treasure;
+
+        public Room(int x, int y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int getX()
+        {
+            return x;
+        }
+
+        public int getY()
+        {
+            return y;
+        }
 
         #region Navigation
         /// <summary>
@@ -28,7 +40,7 @@ namespace DoolhofProject2021
         /// </summary>
         /// <param name="direction">The direction in which to move.</param>
         /// <returns>true when there is a connection.</returns>
-        private bool canGo(int direction)
+        internal bool canGo(int direction)
         {
             return connections[direction] != null;
         }
@@ -40,7 +52,7 @@ namespace DoolhofProject2021
         /// </summary>
         /// <param name="direction">The direction in which to move.</param>
         /// <returns></returns>
-        private Room go(int direction)
+        internal Room go(int direction)
         {
             if (!canGo(direction))
             {
@@ -49,44 +61,55 @@ namespace DoolhofProject2021
             return connections[direction];
         }
 
+        internal void createConnection(int direction, Room other)
+        {
+            // Don't overwrite existing connections...
+            if (canGo(direction))
+            {
+                throw new Exception("A connection in that direction already exists!");
+            }
+            // Add a connection to the given room.
+            connections[direction] = other;
+        }
+
         public bool canGoEast()
         {
-            return canGo(EAST);
+            return canGo(Direction.EAST);
         }
 
         public Room goEast()
         {
-            return go(EAST);
+            return go(Direction.EAST);
         }
 
         public bool canGoWest()
         {
-            return canGo(WEST);
+            return canGo(Direction.WEST);
         }
 
         public Room goWest()
         {
-            return go(WEST);
+            return go(Direction.WEST);
         }
 
         public bool canGoNorth()
         {
-            return canGo(NORTH);
+            return canGo(Direction.NORTH);
         }
 
         public bool canGoSouth()
         {
-            return canGo(SOUTH);
+            return canGo(Direction.SOUTH);
         }
 
         public Room goNorth()
         {
-            return go(NORTH);
+            return go(Direction.NORTH);
         }
 
         public Room goSouth()
         {
-            return go(SOUTH);
+            return go(Direction.SOUTH);
         }
         #endregion
 
@@ -116,6 +139,11 @@ namespace DoolhofProject2021
         public bool isExit()
         {
             return exit;
+        }
+
+        internal void makeExit()
+        {
+            exit = true;
         }
         #endregion
     }
