@@ -39,6 +39,35 @@ namespace DoolhofProject2021
             }
         }
 
+        /// <summary>
+        /// How wide is this maze?
+        /// </summary>
+        /// <returns></returns>
+        public int getWidth()
+        {
+            return maze.GetLength(0);
+        }
+
+        /// <summary>
+        /// How high is this maze?
+        /// </summary>
+        /// <returns></returns>
+        public int getHeight()
+        {
+            return maze.GetLength(1);
+        }
+
+        /// <summary>
+        /// Retrieve one particular room.
+        /// </summary>
+        /// <param name="cx"></param>
+        /// <param name="cy"></param>
+        /// <returns></returns>
+        public Room getRoom(int cx, int cy)
+        {
+            return maze[cx, cy];
+        }
+
         public bool isMazeDone()
         {
             return path.Count == 0;
@@ -89,14 +118,6 @@ namespace DoolhofProject2021
             // Repeat for that room...
             current = other;
             path.Push(current);
-        }
-
-        private Room getRoom(int cx, int cy, int direction)
-        {
-            return maze[
-                cx + Direction.getDx(direction),
-                cy + Direction.getDy(direction)
-                ];
         }
 
         private bool directionCannotBeUsed(int direction, int cx, int cy, Room current)
