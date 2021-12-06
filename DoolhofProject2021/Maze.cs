@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,21 +84,21 @@ namespace DoolhofProject2021
 
         public void generateStep()
         {
+            if (isMazeDone())
+            {
+                return;
+            }
             Room current = path.Peek();
             // Choose a random direction...
             int direction = LehmerRNG.Next(4);
             // Check if that direction can be used...
             //  * Not out of bounds.
             //  * Not yet connected.
-            while (directionCannotBeUsed(direction % 4, current.getX(), current.getY(), current))
+            while (!directionCanBeUsed(direction % 4, current.getX(), current.getY(), current))
             {
                 direction = direction + 1;
                 if (direction == 7)
                 {
-                    if (path.Count==0)
-                    {
-                        return;
-                    }
                     Console.WriteLine("Back to " + current.getX() + ", " + current.getY());
                     // No further connection possible...
                     current = path.Pop();
@@ -120,27 +121,48 @@ namespace DoolhofProject2021
             path.Push(current);
         }
 
-        private bool directionCannotBeUsed(int direction, int cx, int cy, Room current)
+        private bool directionCanBeUsed(int direction, int cx, int cy, Room current)
         {
             if (direction == Direction.NORTH && cy == 0)
             {
-                return true;
+                return false;
             }
             else if (direction == Direction.WEST && cx == 0)
             {
-                return true;
+                return false;
             }
             else if (direction == Direction.SOUTH && cy == (maze.GetLength(1) - 1))
             {
-                return true;
+                return false;
             }
             else if (direction == Direction.EAST && cx == (maze.GetLength(0) - 1))
             {
-                return true;
+                return false;
             }
             else
             {
-                return current.canGo(direction);
+                // If the direction is already used, you cannot use it again!
+                return !current.canGo(direction);
+            }
+        }
+
+        public void drawPath(Graphics g, int scale)
+        {
+            int lx = -1;
+            int ly = -1;
+            Pen p = new Pen(Color.Blue, 5);
+            p.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+            p.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+            foreach (Room r in path)
+            {
+                int cx = r.getX()*scale+ (scale/2);
+                int cy = r.getY()*scale +(scale/2);
+                if (lx!=-1)
+                {
+                    g.DrawLine(p, lx, ly, cx, cy);
+                }
+                lx = cx;
+                ly = cy;
             }
         }
     }
