@@ -10,7 +10,7 @@ namespace DoolhofProject2021
     {
         // Each room has four possible connections.
         private Room[] connections = new Room[4];
-
+        // Store the rooms position.
         private readonly int x,y;
 
         // Can the maze be exited from this room?

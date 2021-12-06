@@ -10,8 +10,10 @@ namespace DoolhofProject2021
     {
         // Create a 2D plane of rooms.
         private Room[,] maze;
+        // Store the explore path through the maze.
+        private Stack<Room> path;
 
-        public Maze(int width, int height)
+        public Maze(int width, int height, bool generate = true)
         {
             // Create enough space.
             maze = new Room[width, height];
@@ -27,52 +29,66 @@ namespace DoolhofProject2021
             }
             maze[width - 1, height - 1].makeExit();
 
-            generateMaze();
+            // Start the exploration path.
+            path = new Stack<Room>();
+            path.Push(maze[0, 0]);
+
+            if (generate)
+            {
+                generateMaze();
+            }
+        }
+
+        public bool isMazeDone()
+        {
+            return path.Count == 0;
         }
 
         private void generateMaze()
         {
-            // Start in a room.
-            Room current = maze[0, 0];
-            Stack<Room> path = new Stack<Room>();
-            path.Push(current);
-            while (path.Count>0)
+            while (!isMazeDone())
             {
-                // Choose a random direction...
-                int direction = LehmerRNG.Next(4);
-                // Check if that direction can be used...
-                //  * Not out of bounds.
-                //  * Not yet connected.
-                while (directionCannotBeUsed(direction % 4, current.getX(), current.getY(), current))
-                {
-                    direction = direction + 1;
-                    if (direction == 7)
-                    {
-                        if (path.Count==0)
-                        {
-                            return;
-                        }
-                        // No further connection possible...
-                        current = path.Pop();
-                        direction = LehmerRNG.Next(4);
-                        Console.WriteLine("Back to " + current.getX() + ", " + current.getY());
-                    }
-                }
-                direction = direction % 4;
-                Console.WriteLine(current.getX() + "," + current.getY() + " moving " + direction);
-                // Then create a connection... 
-                // Retrieve the room that lies in that direction...
-                int nx = current.getX() + Direction.getDx(direction);
-                int ny = current.getY() + Direction.getDy(direction);
-                Room other = maze[nx, ny];
-                // Create a connection in that direction to the other room.
-                current.createConnection(direction, other);
-                // Let the other room create the opposite connection toward the current Room.
-                other.createConnection(Direction.getOpposite(direction), current);
-                // Repeat for that room...
-                current = other;
-                path.Push(current);
+                generateStep();
             }
+        }
+
+        public void generateStep()
+        {
+            Room current = path.Peek();
+            // Choose a random direction...
+            int direction = LehmerRNG.Next(4);
+            // Check if that direction can be used...
+            //  * Not out of bounds.
+            //  * Not yet connected.
+            while (directionCannotBeUsed(direction % 4, current.getX(), current.getY(), current))
+            {
+                direction = direction + 1;
+                if (direction == 7)
+                {
+                    if (path.Count==0)
+                    {
+                        return;
+                    }
+                    Console.WriteLine("Back to " + current.getX() + ", " + current.getY());
+                    // No further connection possible...
+                    current = path.Pop();
+                    return;
+                }
+            }
+            direction = direction % 4;
+            Console.WriteLine(current.getX() + "," + current.getY() + " moving " + direction);
+            // Then create a connection... 
+            // Retrieve the room that lies in that direction...
+            int nx = current.getX() + Direction.getDx(direction);
+            int ny = current.getY() + Direction.getDy(direction);
+            Room other = maze[nx, ny];
+            // Create a connection in that direction to the other room.
+            current.createConnection(direction, other);
+            // Let the other room create the opposite connection toward the current Room.
+            other.createConnection(Direction.getOpposite(direction), current);
+            // Repeat for that room...
+            current = other;
+            path.Push(current);
         }
 
         private Room getRoom(int cx, int cy, int direction)
