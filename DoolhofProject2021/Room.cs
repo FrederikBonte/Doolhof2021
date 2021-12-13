@@ -34,6 +34,18 @@ namespace DoolhofProject2021
             return y;
         }
 
+        public bool isConnected()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                if (connections[i]!=null)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         #region Navigation
         /// <summary>
         /// Returns true when there is a connection in the provided direction.

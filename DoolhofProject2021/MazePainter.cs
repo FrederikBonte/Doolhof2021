@@ -37,7 +37,7 @@ namespace DoolhofProject2021
                 }
             }
 
-            //maze.drawPath(g, SCALE);
+            maze.drawPath(g, SCALE);
         }
 
         private void drawRoom(Graphics g, Pen pen, Room room)

@@ -145,8 +145,11 @@ namespace DoolhofProject2021
             }
             else
             {
-                // If the direction is already used, you cannot use it again!
-                return !current.canGo(direction);
+                Room r = getRoom(
+                    current.getX() + Direction.getDx(direction),
+                    current.getY() + Direction.getDy(direction)
+                    );
+                return !r.isConnected();
             }
         }
 

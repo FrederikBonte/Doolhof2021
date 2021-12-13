@@ -36,7 +36,6 @@ namespace DoolhofProject2021
             // timer
             // 
             this.timer.Enabled = true;
-            this.timer.Interval = 250;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // MazePainter
