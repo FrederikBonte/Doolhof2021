@@ -42,7 +42,7 @@ namespace DoolhofProject2021
         /// <returns>true when there is a connection.</returns>
         internal bool canGo(int direction)
         {
-            return connections[direction] != null;
+            return connections[direction%4] != null;
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace DoolhofProject2021
             {
                 throw new Exception("Illegal move no connection there.");
             }
-            return connections[direction];
+            return connections[direction%4];
         }
 
         internal void createConnection(int direction, Room other)
@@ -69,7 +69,7 @@ namespace DoolhofProject2021
                 throw new Exception("A connection in that direction already exists!");
             }
             // Add a connection to the given room.
-            connections[direction] = other;
+            connections[direction%4] = other;
         }
 
         public bool canGoEast()

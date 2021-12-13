@@ -94,7 +94,7 @@ namespace DoolhofProject2021
             // Check if that direction can be used...
             //  * Not out of bounds.
             //  * Not yet connected.
-            while (!directionCanBeUsed(direction % 4, current.getX(), current.getY(), current))
+            while (!directionCanBeUsed(direction % 4, current))
             {
                 direction = direction + 1;
                 if (direction == 7)
@@ -104,6 +104,10 @@ namespace DoolhofProject2021
                     current = path.Pop();
                     return;
                 }
+            }
+            if (current.canGo(direction))
+            {
+                throw new Exception("Illegal state found!");
             }
             direction = direction % 4;
             Console.WriteLine(current.getX() + "," + current.getY() + " moving " + direction);
@@ -121,21 +125,21 @@ namespace DoolhofProject2021
             path.Push(current);
         }
 
-        private bool directionCanBeUsed(int direction, int cx, int cy, Room current)
+        private bool directionCanBeUsed(int direction, Room current)
         {
-            if (direction == Direction.NORTH && cy == 0)
+            if (direction == Direction.NORTH && current.getY() == 0)
             {
                 return false;
             }
-            else if (direction == Direction.WEST && cx == 0)
+            else if (direction == Direction.WEST && current.getX() == 0)
             {
                 return false;
             }
-            else if (direction == Direction.SOUTH && cy == (maze.GetLength(1) - 1))
+            else if (direction == Direction.SOUTH && current.getY() == (maze.GetLength(1) - 1))
             {
                 return false;
             }
-            else if (direction == Direction.EAST && cx == (maze.GetLength(0) - 1))
+            else if (direction == Direction.EAST && current.getX() == (maze.GetLength(0) - 1))
             {
                 return false;
             }
