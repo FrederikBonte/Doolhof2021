@@ -16,6 +16,15 @@ namespace DoolhofProject2021
 
         public Maze(int width, int height, bool generate = true)
         {
+            reset(width, height);
+            if (generate)
+            {
+                generateMaze();
+            }
+        }
+
+        public void reset(int width, int height)
+        { 
             // Create enough space.
             maze = new Room[width, height];
             // Loop through all rows.
@@ -33,11 +42,6 @@ namespace DoolhofProject2021
             // Start the exploration path.
             path = new Stack<Room>();
             path.Push(maze[0, 0]);
-
-            if (generate)
-            {
-                generateMaze();
-            }
         }
 
         /// <summary>
@@ -82,6 +86,23 @@ namespace DoolhofProject2021
             }
         }
 
+        private void checkComplexEnough()
+        {
+            if (path.Count() > 0 && path.Peek().isExit())
+            {
+                if (path.Count() < (getWidth()+getHeight()) * 5.5)
+                {
+                    Console.WriteLine("Rejecting maze.");
+                    reset(getWidth(), getHeight());
+
+                }
+                else
+                {
+                    Console.WriteLine("Accepable complexity detected.");
+                }
+            }
+        }
+
         public void generateStep()
         {
             if (isMazeDone())
@@ -90,27 +111,24 @@ namespace DoolhofProject2021
             }
             Room current = path.Peek();
             // Choose a random direction...
-            int direction = LehmerRNG.Next(4);
-            // Check if that direction can be used...
-            //  * Not out of bounds.
-            //  * Not yet connected.
-            while (!directionCanBeUsed(direction % 4, current))
+            int direction = 0;
+            if (getUsableDirection(current, out direction))
             {
-                direction = direction + 1;
-                if (direction == 7)
-                {
-                    Console.WriteLine("Back to " + current.getX() + ", " + current.getY());
-                    // No further connection possible...
-                    current = path.Pop();
-                    return;
-                }
+                makeConnection(current, direction);
+                checkComplexEnough();
             }
-            if (current.canGo(direction))
+            else
             {
-                throw new Exception("Illegal state found!");
+                //Console.WriteLine("Back to " + current.getX() + ", " + current.getY());
+                // No further connection possible...
+                path.Pop();
+                return;
             }
-            direction = direction % 4;
-            Console.WriteLine(current.getX() + "," + current.getY() + " moving " + direction);
+        }
+
+        private void makeConnection(Room current, int direction)
+        {
+            //Console.WriteLine(current.getX() + "," + current.getY() + " moving " + direction);
             // Then create a connection... 
             // Retrieve the room that lies in that direction...
             int nx = current.getX() + Direction.getDx(direction);
@@ -120,13 +138,35 @@ namespace DoolhofProject2021
             current.createConnection(direction, other);
             // Let the other room create the opposite connection toward the current Room.
             other.createConnection(Direction.getOpposite(direction), current);
-            // Repeat for that room...
-            current = other;
-            path.Push(current);
+            // Add the new room at the end of the path.
+            path.Push(other);
         }
+
+        private bool getUsableDirection(Room current, out int direction)
+        {
+            direction = -1;
+            for (int i = 0; i < 8; i++) //()
+            {
+                direction = LehmerRNG.Next(4);
+                if (directionCanBeUsed(direction, current))
+                {
+                    return true;
+                }
+                else if (directionCanBeUsed(i%4, current))
+                {
+                    direction = i%4;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
 
         private bool directionCanBeUsed(int direction, Room current)
         {
+            // Check if that direction can be used...
+            //  * Not out of bounds.
             if (direction == Direction.NORTH && current.getY() == 0)
             {
                 return false;
@@ -145,6 +185,7 @@ namespace DoolhofProject2021
             }
             else
             {
+                //  * Target room is not yet connected to anything else!
                 Room r = getRoom(
                     current.getX() + Direction.getDx(direction),
                     current.getY() + Direction.getDy(direction)

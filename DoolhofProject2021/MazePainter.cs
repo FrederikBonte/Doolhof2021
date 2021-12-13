@@ -14,7 +14,7 @@ namespace DoolhofProject2021
     {
         private const int SCALE = 26;
         private Maze maze;
-
+        private int quick = 10;
 
         public MazePainter()
         {
@@ -66,17 +66,25 @@ namespace DoolhofProject2021
             // Actually create a maze.
             // Assume some size...
             // Also DONT GENERATE STUFF!!!
-            maze = new Maze(Width / SCALE, Height / SCALE, false);
+            maze = new Maze(Width / SCALE, Height / SCALE);
         }
 
         private void timer_Tick(object sender, EventArgs e)
         {
             if (!maze.isMazeDone())
             {
-                maze.generateStep();
+                for (int i = 0; i < quick; i++)
+                {
+                    maze.generateStep();
+                }
             }
             // Repaint the entire screen.
             Invalidate();
+        }
+
+        private void MazePainter_SizeChanged(object sender, EventArgs e)
+        {
+            maze = new Maze(Width / SCALE, Height / SCALE, false);
         }
     }
 }

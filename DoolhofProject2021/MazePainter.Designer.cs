@@ -36,6 +36,7 @@ namespace DoolhofProject2021
             // timer
             // 
             this.timer.Enabled = true;
+            this.timer.Interval = 27;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // MazePainter
@@ -46,6 +47,7 @@ namespace DoolhofProject2021
             this.Name = "MazePainter";
             this.Size = new System.Drawing.Size(586, 382);
             this.Load += new System.EventHandler(this.MazePainter_Load);
+            this.SizeChanged += new System.EventHandler(this.MazePainter_SizeChanged);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.MazePainter_Paint);
             this.ResumeLayout(false);
 
