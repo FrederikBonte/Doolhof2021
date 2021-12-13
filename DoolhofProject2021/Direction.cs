@@ -8,6 +8,8 @@ namespace DoolhofProject2021
 {
     public class Direction
     {
+        private static Random RNG = new Random();
+
         // There are four possible directions to move from Room to Room.
         public const int NORTH = 0;
         public const int EAST = 1;
@@ -16,6 +18,12 @@ namespace DoolhofProject2021
 
         private static int[] dx = { 0, 1, 0, -1 };
         private static int[] dy = { -1, 0, 1, 0 };
+
+        public static int getRandomDirection()
+        {
+            // Choose randomly one of the direction.
+            return RNG.Next(0, 4);
+        }
 
         public static int getOpposite(int direction)
         {
